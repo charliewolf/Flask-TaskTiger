@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+build
+*.egg
+dist
+*.wheel
