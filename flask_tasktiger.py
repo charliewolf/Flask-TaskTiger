@@ -25,6 +25,8 @@ class TaskTiger(object):
             if not hasattr(ctx, 'TaskTiger'):
                 ctx.TaskTiger = self._create()
             return ctx.TaskTiger.delay(*args, **kwargs)
+        else:
+           raise RuntimeError("You need to use this from a flask app context")
 
     def task(self, queue=None, hard_timeout=None, unique=None, lock=None, lock_key=None, retry=None, retry_on=None, retry_method=None, batch=False):
         def _delay(func):
