@@ -23,8 +23,17 @@ class TaskTiger(object):
         ctx = _app_ctx_stack.top
         if ctx is not None:
             if not hasattr(ctx, 'TaskTiger'):
-                ctx.TaskTiger = self._create()
-            return ctx.TaskTiger.delay(*args, **kwargs)
+                ctx.tiger = self._create()
+            return ctx.tiger.delay(*args, **kwargs)
+        else:
+           raise RuntimeError("You need to use this from a flask app context")
+
+    def run_worker_with_args(self, *args, **kwargs):
+        ctx = _app_ctx_stack.top
+        if ctx is not None:
+            if not hasattr(ctx, 'TaskTiger'):
+                ctx.tiger = self._create()
+            return ctx.tiger.run_worker_with_args(*args, **kwargs)
         else:
            raise RuntimeError("You need to use this from a flask app context")
 
