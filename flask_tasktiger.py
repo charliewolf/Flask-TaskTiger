@@ -13,7 +13,7 @@ class TaskTiger(object):
         app.config.setdefault('TASKTIGER_ALWAYS_EAGER', app.debug)
 
     def _create(self):
-        return tasktiger.TaskTiger(self.redis, self._config)
+        return tasktiger.TaskTiger(self.redis, self._config, setup_structlog=True)
 
     @property
     def _config(self):
@@ -68,3 +68,13 @@ class TaskTiger(object):
             return func
 
         return _wrap
+
+    @property
+    def log(self):
+        ctx = _app_ctx_stack.top
+        if ctx is not None:
+            if not hasattr(ctx, 'TaskTiger'):
+                ctx.tiger = self._create()
+            return ctx.tiger.log
+        else:
+           raise RuntimeError("You need to use this from a flask app context")
